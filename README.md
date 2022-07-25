@@ -1,2 +1,1 @@
-# MLN
-Monotonic Lipschitz Network development
+# Monotonic Lipschitz Networks (MLN) Development
