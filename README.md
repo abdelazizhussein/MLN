@@ -1,6 +1,6 @@
 # Monotonic Lipschitz Networks (MLN) Development
 
-##Setup
+## Setup
 
 Note: Set up a [python virtual environment](https://docs.python.org/3/tutorial/venv.html) before installing for a cleaner setup that does not conflict with your existing packages.
 
