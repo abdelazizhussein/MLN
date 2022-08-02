@@ -1,0 +1,13 @@
+shuffle: True 
+features:
+- n_MissingHits
+- n_Hits
+- ax
+- bx
+- cx
+arch_parameters:
+  n_features: 18
+  n_classes: 2
+  n_nodes: [18,10,5,2]
+  dropout: 0.2
+  monotone_constraints: [0,0,0]
