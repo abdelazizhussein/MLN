@@ -21,14 +21,16 @@ class ModelConfiguration:
         self.features = self.data['features']
         self.shuffle = self.data['training_parameters']['shuffle']
         self.monotone_constraints=self.data['arch_parameters']['monotone_constraints']
+        self.n_features = self.data['arch_parameters']['n_features']
+        self.group_size = self.data['arch_parameters']['group_size']
+        self.n_nodes = self.data['arch_parameters']['n_nodes']
+        self.n_classes = self.data['arch_parameters']['n_classes']
 
         
 
 
 def save_model_json(training_directory,model):
     state_dict = model.state_dict()
-    l6_weight = model.nn.l6.weight
-    l5_weight = model.nn.l5.weight
     weight_keys = [x for x in state_dict if "weight" in x]
     for k in state_dict:
         if k in weight_keys:

@@ -4,81 +4,62 @@ from monotone.functional import direct_norm
 
 
 class UnconstrainedModel(torch.nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.model = torch.nn.Sequential(
-    torch.nn.Linear(3, 16),
-    torch.nn.LeakyReLU(),
-    torch.nn.Linear(16, 16),
-    torch.nn.LeakyReLU(),
-    torch.nn.Linear(16, 16),
-    torch.nn.LeakyReLU(),
-    torch.nn.Linear(16, 16),
-    torch.nn.LeakyReLU(),
-    torch.nn.Linear(16, 16),
-    torch.nn.LeakyReLU(),
-    torch.nn.Linear(16, 1),
-)
+    def __init__(self,n_features, n_classes, n_nodes):
+        super().__init__()        
+        self.layers = []
+        self.n_classes = n_classes
+        self.n_features = n_features
+        self.n_nodes = n_nodes
+        self._build_layers()
+
+    def _build_layers(self):
+        self.layers.append(direct_norm(torch.nn.Linear(self.n_features, self.n_nodes[0])))
+        self.layers.append(torch.nn.LeakyReLU())
+        last_nodes = self.n_nodes[0]
+        for i_n_nodes in self.n_nodes[1:]:
+            self.layers.append(direct_norm(torch.nn.Linear(last_nodes, i_n_nodes)))
+            self.layers.append(torch.nn.LeakyReLU())
+            last_nodes = i_n_nodes
+        self.layers.append(direct_norm(torch.nn.Linear(last_nodes, self.n_classes)))
+        for i, layer in enumerate(self.layers):
+            setattr(self, "layer_%d" % i, layer)
+
     def forward(self, x):
-        return self.model(x)
+        for layer in self.layers:
+            x = layer(x)
+        return x
 
 # Build a Lipschitz-1 network
 class RobustModel(torch.nn.Module):
-    def __init__(self):
+    def __init__(self,n_features, n_classes, n_nodes,group_size):
         super().__init__()
-        #self.model = torch.nn.Sequential(
-        self.l1 = direct_norm(torch.nn.Linear(5, 16))
-        GroupSort(2)
-        self.l2 = direct_norm(torch.nn.Linear(16, 16))
-        GroupSort(2)
-        self.l3 = direct_norm(torch.nn.Linear(16, 16))
-        GroupSort(2)
-        self.l4 = direct_norm(torch.nn.Linear(16, 16))
-        GroupSort(2)
-        self.l5 = direct_norm(torch.nn.Linear(16, 16))
-        GroupSort(2)
-        self.l6 = direct_norm(torch.nn.Linear(16, 1))
-            #torch.nn.Sigmoid(),
-        #)
+        self.layers = []
+        self.n_classes = n_classes
+        self.n_features = n_features
+        self.n_nodes = n_nodes
+        self.group_size = group_size
+        self._build_layers()
+
+    def _build_layers(self):
+        self.layers.append(direct_norm(torch.nn.Linear(self.n_features, self.n_nodes[0])))
+        self.layers.append(GroupSort(self.group_size))
+        last_nodes = self.n_nodes[0]
+        for i_n_nodes in self.n_nodes[1:]:
+            self.layers.append(direct_norm(torch.nn.Linear(last_nodes, i_n_nodes)))
+            print(self.group_size)
+            self.layers.append(GroupSort(self.group_size))
+            last_nodes = i_n_nodes
+        self.layers.append(direct_norm(torch.nn.Linear(last_nodes, self.n_classes)))
+        for i, layer in enumerate(self.layers):
+            setattr(self, "layer_%d" % i, layer)
 
     def forward(self, x):
-        x = self.l1(x)
-        #print("Layer1:",x)
-        g= GroupSort(2)
-        x = g.forward(x)
-        #print("Layer1_sorted:",x)
-
-        x = self.l2(x)
-        #print("Layer2:",x)
-        g= GroupSort(2)
-        x = g.forward(x)
-        #print("Layer2_sorted:",x)
-
-        x = self.l3(x)
-        #print("Layer3:",x)
-        g= GroupSort(2)
-        x = g.forward(x)
-        #print("Layer3_sorted:",x)
-
-        x = self.l4(x)
-        #print("Layer4:",x)
-        g= GroupSort(2)
-        x = g.forward(x)
-        #print("Layer4_sorted:",x)
-
-        x = self.l5(x)
-        #print("Layer5:",x)
-        g= GroupSort(2)
-        x = g.forward(x)
-        #print("Layer5_sorted:",x)
-
-        x = self.l6(x)
-        #print("Layer6:", x)
+        for layer in self.layers:
+            x = layer(x)
         return x
 
+
 import typing as T
-
-
 class SigmaNet(torch.nn.Module):
     def __init__(
         self,
