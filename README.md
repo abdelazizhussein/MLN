@@ -6,7 +6,7 @@ Note: Set up a [python virtual environment](https://docs.python.org/3/tutorial/v
 
 ```bash
 git clone https://github.com/abdelazizhussein/MLN.git
-python3 -m pip install -e 
+python3 -m pip install -e MLN
 ```
 
 
