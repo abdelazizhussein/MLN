@@ -11,7 +11,7 @@ class GroupSort(torch.nn.Module):
         return group_sort(x, self.n_per_group, self.axis)
 
     def extra_repr(self):
-        return "num_groups: {self.n_per_group}"
+        return str(self.n_per_group)
 
 
 def get_sorting_shape(x: torch.Tensor, n_per_group: int, axis: int = -1) -> list:
