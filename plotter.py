@@ -19,8 +19,8 @@ def score_distribution(true_label,nn_label,training_directory):
     ghost_mask = true_label == 1
     true_mask = true_label == 0
     nn_label = nn_label.detach().numpy()
-    plt.hist(nn_label[true_mask],histtype="step",range=(0,1),label = 'Real Tracks',density=True)
-    plt.hist(nn_label[ghost_mask],histtype="step",range=(0,1),label='Ghost Tracks',density=True)
+    plt.hist(nn_label[true_mask],histtype="step",label = 'Real Tracks')
+    plt.hist(nn_label[ghost_mask],histtype="step",label='Ghost Tracks')
     plt.legend()
     plt.savefig(os.path.join(training_directory,'plots/training_score_dist.png'))
     

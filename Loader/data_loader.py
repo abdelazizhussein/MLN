@@ -3,7 +3,6 @@ import pandas as pd
 import json
 from Loader.scifiTracks import ScifiTrack
 import matplotlib.pyplot as plt
-
 def DataLoader(json_path:str,model_config:str,features):
     """
     Loads data from Json file into a pandas dataframe
@@ -45,6 +44,9 @@ def DataLoader(json_path:str,model_config:str,features):
         dataset = pd.DataFrame.from_dict(scifitracks)
         labels = dataset['isGhost']
         dataset=dataset[features]
+
+        #scale dataset to be between -1 and 1
+        dataset = 2*(dataset - dataset.min())/(dataset.max() - dataset.min()) -1
         
         #print out information about the number of ghost tracks present in the dataset
         print("Ghosts fraction: "+str(totGhosts)+" / "+str(totTracks)+" ("+str(100*totGhosts/totTracks)+"%)")

@@ -25,6 +25,7 @@ class ModelConfiguration:
         self.group_size = self.data['arch_parameters']['group_size']
         self.n_nodes = self.data['arch_parameters']['n_nodes']
         self.n_classes = self.data['arch_parameters']['n_classes']
+        self.lambda_lip = self.data['arch_parameters']['lambda_lip']
 
         
 

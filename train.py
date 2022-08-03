@@ -25,7 +25,7 @@ def cli():
 @click.option('-uc','--unconstraint',is_flag = True,default=False,show_default =True, help= "declare flag if Unconstraint model is desired")
 @click.option('-t','--training-directory',required=True, help="Training directory")
 @click.option('-m','--model-config',required=True, help="Path to model config .yml file")
-@click.option('-e','--num-epochs',required=False,default = 10000, help="Number of epochs for training")
+@click.option('-e','--num-epochs',required=False,default = 5000, help="Number of epochs for training")
 @click.option('-lr','--learning-rate',required=False,default = 1e-3, help="learning rate for training")
 def train( input:str,model_config:str,num_epochs:int,learning_rate:int,training_directory:str,unconstraint:bool)-> None:
     if not os.path.exists(training_directory):
@@ -49,11 +49,12 @@ def train( input:str,model_config:str,num_epochs:int,learning_rate:int,training_
     #setup model
     loss_func = torch.nn.L1Loss()
     if unconstraint:
-        model = UnconstrainedModel()
+        model = UnconstrainedModel(mconfig.n_features, mconfig.n_classes, mconfig.n_nodes)
     else:
         
-        model = SigmaNet(RobustModel(), sigma=1,monotone_constraints=mconfig.monotone_constraints)
+        model = SigmaNet(RobustModel(mconfig.n_features, mconfig.n_classes, mconfig.n_nodes,mconfig.group_size), sigma=mconfig.lambda_lip ,monotone_constraints=mconfig.monotone_constraints)
 
+    print(model)
     optim_robust = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
     #run training
@@ -70,6 +71,8 @@ def train( input:str,model_config:str,num_epochs:int,learning_rate:int,training_
             f"epoch: {i} loss: {loss_robust.item():.4f}")
 
     #save model and model dict  for later use
+    model.eval()
+    y_robust = model(xtrain)
     with open(os.path.join(training_directory,'objs.pkl'), 'wb') as f: 
         pickle.dump([EPOCHS, loss, y_train,y_robust,x_val,y_val], f)
     model_dict = model.state_dict()
