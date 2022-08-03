@@ -8,7 +8,9 @@ features:
 - bx
 - cx
 arch_parameters:
-  n_features: 18
-  n_classes: 2
-  n_nodes: [18,10,5,2]
-  monotone_constraints: [0,0,0]
+  n_features: 5
+  n_classes: 1
+  lambda_lip : 1
+  n_nodes: [64,64,64,64,64,64]
+  group_size: 2
+  monotone_constraints: [0,0,0,0,0]
