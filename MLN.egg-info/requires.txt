@@ -1,8 +1,0 @@
-torch
-matplotlib
-numpy
-sklearn
-tqdm
-click
-pandas
-pyyaml
