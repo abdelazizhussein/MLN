@@ -1,6 +1,6 @@
 import torch
-from montone.group import GroupSort
-from montone.functional import direct_norm
+from monotone.group import GroupSort
+from monotone.functional import direct_norm
 
 
 class UnconstrainedModel(torch.nn.Module):
@@ -27,7 +27,7 @@ class RobustModel(torch.nn.Module):
     def __init__(self):
         super().__init__()
         #self.model = torch.nn.Sequential(
-        self.l1 = direct_norm(torch.nn.Linear(3, 16))
+        self.l1 = direct_norm(torch.nn.Linear(5, 16))
         GroupSort(2)
         self.l2 = direct_norm(torch.nn.Linear(16, 16))
         GroupSort(2)

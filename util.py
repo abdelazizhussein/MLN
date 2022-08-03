@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import yaml
-from montone.functional import get_normed_weights
+from monotone.functional import get_normed_weights
 import json
 import os 
 

@@ -14,9 +14,6 @@ import pickle
 from collections import OrderedDict
 import json
 from util import save_model_json
-
-from IPython import embed
-
 @click.group()
 def cli():
     pass
@@ -30,7 +27,7 @@ def cli():
 @click.option('-m','--model-config',required=True, help="Path to model config .yml file")
 @click.option('-e','--num-epochs',required=False,default = 10000, help="Number of epochs for training")
 @click.option('-lr','--learning-rate',required=False,default = 1e-3, help="learning rate for training")
-def setup( input:str,model_config:str,num_epochs:int,learning_rate:int,training_directory:str,unconstraint:bool)-> None:
+def train( input:str,model_config:str,num_epochs:int,learning_rate:int,training_directory:str,unconstraint:bool)-> None:
     if not os.path.exists(training_directory):
         os.makedirs(training_directory)
 
@@ -77,7 +74,7 @@ def setup( input:str,model_config:str,num_epochs:int,learning_rate:int,training_
         pickle.dump([EPOCHS, loss, y_train,y_robust,x_val,y_val], f)
     model_dict = model.state_dict()
     model_dict = OrderedDict({k: model_dict[k].detach().cpu().tolist() for k in model_dict})
-    save_model_json(os.path.join(training_directory,"model.json"),model_dict)
+    save_model_json(training_directory,model)
     with open(os.path.join(training_directory,"model.json"), "w") as outfile:
         json.dump(model_dict, outfile)
     
