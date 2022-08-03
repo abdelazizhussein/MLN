@@ -21,7 +21,6 @@ To run training:
 
 ```
 python train.py train -t  ./path/to/training/directory -i ./path/to/input/json/file  -m ./path/to/input/yml/model/config 
-
 ```
 To run plotter
 ```
